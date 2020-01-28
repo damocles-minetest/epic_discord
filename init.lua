@@ -88,9 +88,11 @@ minetest.register_node("epic_discord:webhook", {
     on_enter = function(_, meta, player, ctx)
       local text = meta:get_string("text")
 			local owner = meta:get_string("owner")
+			local texture = meta:get_string("texture")
+
 			text = text:gsub("@player", player:get_player_name())
 			text = text:gsub("@owner", owner)
-			execute(text)
+			execute(text, texture)
       ctx.next()
     end
   }
