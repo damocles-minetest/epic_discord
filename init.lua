@@ -29,7 +29,7 @@ local execute = function(text, texture)
 		content = text
 	}
 
-	if texture_baseurl and texture  ~= "" then
+	if texture_baseurl and texture and texture  ~= "" then
 		data.avatar_url = texture_baseurl .. texture
 	end
 
