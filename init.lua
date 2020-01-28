@@ -17,10 +17,10 @@ local update_formspec = function(meta)
 		"field[0.2,0.5;8,1;text;Template (use @player and @owner);" .. text .. "]" ..
 
 		-- col 2
-		"field[0.2,0.5;8,1;texture;Texture;" .. texture .. "]" ..
+		"field[0.2,1.5;8,1;texture;Texture;" .. texture .. "]" ..
 
 		-- col 3
-		"button_exit[0.1,1.5;8,1;save;Save]" ..
+		"button_exit[0.1,2.5;8,1;save;Save]" ..
 		"")
 end
 
