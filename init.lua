@@ -1,9 +1,8 @@
 
 local http = minetest.request_http_api()
-local webhook_url = minetest.settings:get("epic_discord.webhook_url")
 local texture_baseurl = minetest.settings:get("epic_discord.texture_baseurl")
 
-if not http or not webhook_url or not texture_baseurl then
+if not http or not texture_baseurl then
 	return
 end
 
@@ -12,19 +11,22 @@ local update_formspec = function(meta)
 	local texture = meta:get_string("texture")
 	meta:set_string("infotext", "Webhook block: '" .. text .. "'")
 
-	meta:set_string("formspec", "size[8,3;]" ..
+	meta:set_string("formspec", "size[8,4;]" ..
 		-- col 1
 		"field[0.2,0.5;8,1;text;Template (use @player and @owner);" .. text .. "]" ..
 
 		-- col 2
 		"field[0.2,1.5;8,1;texture;Texture;" .. texture .. "]" ..
 
-		-- col 3
+		-- col 2
+		"field[0.2,1.5;8,1;url;URL (blanked, type to change);]" ..
+
+		-- col 4
 		"button_exit[0.1,2.5;8,1;save;Save]" ..
 		"")
 end
 
-local execute = function(text, texture)
+local execute = function(text, texture, webhook_url)
 	local data = {
 		content = text
 	}
@@ -63,8 +65,10 @@ minetest.register_node("epic_discord:webhook", {
 	after_place_node = function(pos, placer)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("owner", placer:get_player_name())
+		meta:set_string("url", "")
 		meta:set_string("texture", "")
 		meta:set_string("text", "Player @player finished the level 'xyz'!")
+		meta:mark_as_private("url")
     update_formspec(meta, pos)
 	end,
 
@@ -77,6 +81,11 @@ minetest.register_node("epic_discord:webhook", {
 		end
 
     if fields.save then
+			if fields.url and fields.url ~= "" then
+				-- only update if changed
+				meta:set_string("url", fields.url)
+				meta:mark_as_private("url")
+			end
 			meta:set_string("text", fields.text or "Test!")
 			meta:set_string("texture", fields.texture or "")
 			update_formspec(meta, pos)
@@ -86,13 +95,14 @@ minetest.register_node("epic_discord:webhook", {
 
 	epic = {
     on_enter = function(_, meta, player, ctx)
-      local text = meta:get_string("text")
+			local text = meta:get_string("text")
+			local url = meta:get_string("url")
 			local owner = meta:get_string("owner")
 			local texture = meta:get_string("texture")
 
 			text = text:gsub("@player", player:get_player_name())
 			text = text:gsub("@owner", owner)
-			execute(text, texture)
+			execute(text, texture, url)
       ctx.next()
     end
   }
