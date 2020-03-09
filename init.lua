@@ -18,11 +18,11 @@ local update_formspec = function(meta)
 		-- col 2
 		"field[0.2,1.5;8,1;texture;Texture;" .. texture .. "]" ..
 
-		-- col 2
-		"field[0.2,1.5;8,1;url;URL (blanked, type to change);]" ..
+		-- col 3
+		"field[0.2,2.5;8,1;url;URL (blanked, type to change);]" ..
 
 		-- col 4
-		"button_exit[0.1,2.5;8,1;save;Save]" ..
+		"button_exit[0.1,3.5;8,1;save;Save]" ..
 		"")
 end
 
